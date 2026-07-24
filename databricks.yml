@@ -1,0 +1,11 @@
+bundle:
+  name: large_retailer_pipeline
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    workspace:
+      host: "https://dbc-acd8ce35-b07c.cloud.databricks.com"
+    default: true
