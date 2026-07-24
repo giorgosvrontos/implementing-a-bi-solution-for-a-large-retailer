@@ -1,19 +1,9 @@
-stages:
-  - validate
-  - deploy
-
-default:
-  image: ubuntu:latest
-  before_script:
-    - apt-get update && apt-get install -y curl unzip
-    - curl -fsSL -o databricks.zip https://github.com/databricks/cli/releases/download/v1.9.0/databricks_cli_1.9.0_linux_amd64.zip
-    - unzip databricks.zip
-    - mv databricks /usr/local/bin/
-    - databricks --version
 
 validate_dev_giorgos:
   stage: validate
   script:
+    - unset DATABRICKS_CLIENT_ID          
+    - unset DATABRICKS_CLIENT_SECRET      
     - export DATABRICKS_TOKEN=$DATABRICKS_TOKEN_GIORGOS
     - databricks bundle validate -t dev_giorgos
   only:
@@ -22,10 +12,13 @@ validate_dev_giorgos:
 validate_dev_charis:
   stage: validate
   script:
+    - unset DATABRICKS_CLIENT_ID          
+    - unset DATABRICKS_CLIENT_SECRET     
     - export DATABRICKS_TOKEN=$DATABRICKS_TOKEN_CHARIS
     - databricks bundle validate -t dev_charis
   only:
     - Christakidis_Develop
+
 
 validate_prod:
   stage: validate
@@ -38,6 +31,8 @@ validate_prod:
 deploy_to_dev_giorgos:
   stage: deploy
   script:
+    - unset DATABRICKS_CLIENT_ID          
+    - unset DATABRICKS_CLIENT_SECRET      
     - export DATABRICKS_TOKEN=$DATABRICKS_TOKEN_GIORGOS
     - databricks bundle deploy -t dev_giorgos
   only:
@@ -46,6 +41,8 @@ deploy_to_dev_giorgos:
 deploy_to_dev_charis:
   stage: deploy
   script:
+    - unset DATABRICKS_CLIENT_ID          
+    - unset DATABRICKS_CLIENT_SECRET      
     - export DATABRICKS_TOKEN=$DATABRICKS_TOKEN_CHARIS
     - databricks bundle deploy -t dev_charis
   only:
