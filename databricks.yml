@@ -9,3 +9,7 @@ targets:
     workspace:
       host: "https://dbc-acd8ce35-b07c.cloud.databricks.com"
     default: true
+
+  prod:
+    workspace:
+      host: "https://dbc-acd8ce35-b07c.cloud.databricks.com"
