@@ -8,18 +8,33 @@ default:
     - apt-get update && apt-get install -y curl unzip
     - curl -fsSL -o databricks.zip https://github.com/databricks/cli/releases/download/v1.9.0/databricks_cli_1.9.0_linux_amd64.zip
     - unzip databricks.zip
-    # Μεταφορά του εκτελέσιμου στον φάκελο του συστήματος για να αναγνωρίζεται η εντολή 'databricks'
     - mv databricks /usr/local/bin/
-    # Επιβεβαίωση της εγκατεστημένης έκδοσης στα logs του GitLab
     - databricks --version
 
-# Βήμα 1: Επικύρωση του κώδικα (Έλεγχος για συντακτικά λάθη στο bundle)
-validate_bundle:
+validate_dev_giorgos:
   stage: validate
   script:
-    - databricks bundle validate
+    - export DATABRICKS_TOKEN=$DATABRICKS_TOKEN_GIORGOS
+    - databricks bundle validate -t dev_giorgos
+  only:
+    - vrontos-develop
 
-# Βήμα 2: Ανάπτυξη στο DEV περιβάλλον (Τρέχει ΜΟΝΟ στο δικό σου branch)
+validate_dev_charis:
+  stage: validate
+  script:
+    - export DATABRICKS_TOKEN=$DATABRICKS_TOKEN_CHARIS
+    - databricks bundle validate -t dev_charis
+  only:
+    - Christakidis_Develop
+
+validate_prod:
+  stage: validate
+  script:
+    - databricks bundle validate -t prod
+  only:
+    - main
+
+
 deploy_to_dev_giorgos:
   stage: deploy
   script:
