@@ -5,11 +5,14 @@ include:
   - resources/*.yml
 
 targets:
-  dev:
+  dev_giorgos:
     workspace:
-      host: "https://dbc-acd8ce35-b07c.cloud.databricks.com"
-    default: true
+      host: "https://dbc-acd8ce35-b07c.cloud.databricks.com" 
+      
+  dev_charis:
+    workspace:
+      host: "https://dbc-40ae7330-c6d1.cloud.databricks.com" 
 
   prod:
     workspace:
-      host: "https://dbc-acd8ce35-b07c.cloud.databricks.com"
+      host: "https://dbc-acd8ce35-b07c.cloud.databricks.com" 

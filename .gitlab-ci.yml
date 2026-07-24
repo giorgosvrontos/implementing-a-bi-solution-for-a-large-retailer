@@ -20,9 +20,25 @@ validate_bundle:
     - databricks bundle validate
 
 # Βήμα 2: Ανάπτυξη στο DEV περιβάλλον (Τρέχει ΜΟΝΟ στο δικό σου branch)
-deploy_to_dev:
+deploy_to_dev_giorgos:
   stage: deploy
   script:
-    - databricks bundle deploy -t dev
+    - export DATABRICKS_TOKEN=$DATABRICKS_TOKEN_GIORGOS
+    - databricks bundle deploy -t dev_giorgos
   only:
     - vrontos-develop
+
+deploy_to_dev_charis:
+  stage: deploy
+  script:
+    - export DATABRICKS_TOKEN=$DATABRICKS_TOKEN_CHARIS
+    - databricks bundle deploy -t dev_charis
+  only:
+    - Christakidis_Develop
+
+deploy_to_prod:
+  stage: deploy
+  script:
+    - databricks bundle deploy -t prod
+  only:
+    - main
