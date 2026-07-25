@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # 1. Η βάση δεδομένων για το Metabase
+  postgres:
+    image: postgres:15
+    container_name: metabase_db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - metabase_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # 2. Το Metabase (BI Visualization)
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    ports:
+      - "3000:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${POSTGRES_DB}
+      MB_DB_PORT: 5432
+      MB_DB_USER: ${MB_DB_USER}
+      MB_DB_PASS: ${MB_DB_PASS}
+      MB_DB_HOST: ${MB_DB_HOST}
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  # 3. Ο GitLab Runner (CI/CD)
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: unless-stopped
+    volumes:
+      - /srv/gitlab-runner/config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  metabase_db_data:
