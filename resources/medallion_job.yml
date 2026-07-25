@@ -6,6 +6,11 @@ resources:
     medallion_architecture_job:
       name: "Retailer_Medallion_Pipeline"
 
+      schedule:
+        quartz_cron_expression: "0 0 22 * * ?"
+        timezone_id: "UTC"
+        pause_status: "UNPAUSED"
+
       environments:
         default:  
           spec:
