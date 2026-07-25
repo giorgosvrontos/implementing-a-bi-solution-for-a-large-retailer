@@ -31,21 +31,21 @@ resources:
 
         # PIPELINE 2: POS DATA 
         
-#        pos_bronze_ingestion:
-#          notebook_task:
-#            notebook_path: "./bronze_pos_load.ipynb"
+        pos_bronze_ingestion:
+          notebook_task:
+            notebook_path: "./bronze_pos_load.ipynb"
 
-#        pos_silver_transformation:
-#          depends_on:
-#            - task_key: pos_bronze_ingestion
-#          notebook_task:
-#            notebook_path: "./silver_pos_sales.ipynb"
+        pos_silver_transformation:
+          depends_on:
+            - task_key: pos_bronze_ingestion
+          notebook_task:
+            notebook_path: "./silver_pos_sales.ipynb"
 
-#        pos_data_quality:
-#          depends_on:
-#            - task_key: pos_silver_transformation
-#          notebook_task:
-#            notebook_path: "./pos_data_quality_check.ipynb"
+        pos_data_quality:
+          depends_on:
+            - task_key: pos_silver_transformation
+          notebook_task:
+            notebook_path: "./pos_data_quality_check.ipynb"
 
         
         # PIPELINE 3: GOLD LAYER 
@@ -53,6 +53,6 @@ resources:
         gold_star_schema:  
           depends_on:
             - task_key: superstore_silver_data_quality
-            # - task_key: pos_data_quality 
+            - task_key: pos_data_quality 
           notebook_task:
             notebook_path: "./silver_to_gold_layer.ipynb"
