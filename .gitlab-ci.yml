@@ -7,7 +7,7 @@ default:
   before_script:
     - apt-get update && apt-get install -y curl unzip
     - curl -fsSL -o databricks.zip https://github.com/databricks/cli/releases/download/v1.9.0/databricks_cli_1.9.0_linux_amd64.zip
-    - unzip databricks.zip
+    - unzip -o databricks.zip
     - mv databricks /usr/local/bin/
     - databricks --version
 
