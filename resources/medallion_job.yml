@@ -10,53 +10,45 @@ resources:
         timezone_id: "UTC"
         pause_status: "UNPAUSED"
       
-      environments:
-        default:  
-          spec:
-            client: "1"
-
       tasks:
         # PIPELINE 1: SUPERSTORE.CSV
-        superstore_bronze_ingestion:  
+        - task_key: superstore_bronze_ingestion  
           notebook_task:
-            notebook_path: "./superstore.csv_batch_ingestion.ipynb" 
+            notebook_path: "../superstore.csv_batch_ingestion.ipynb" 
 
-        superstore_silver_transformation:  
+        - task_key: superstore_silver_transformation  
           depends_on:
             - task_key: superstore_bronze_ingestion
           notebook_task:
-            notebook_path: "./superstore.csv_bronze_to_silver.ipynb"
+            notebook_path: "../superstore.csv_bronze_to_silver.ipynb"
 
-        superstore_silver_data_quality:  
+        - task_key: superstore_silver_data_quality  
           depends_on:
             - task_key: superstore_silver_transformation
           notebook_task:
-            notebook_path: "./superstore.csv_data_quality_check.ipynb"
+            notebook_path: "../superstore.csv_data_quality_check.ipynb"
 
         # PIPELINE 2: POS DATA 
-        
-        pos_bronze_ingestion:
+        - task_key: pos_bronze_ingestion
           notebook_task:
-            notebook_path: "./bronze_pos_load.ipynb"
+            notebook_path: "../bronze_pos_load.ipynb"
 
-        pos_silver_transformation:
+        - task_key: pos_silver_transformation
           depends_on:
             - task_key: pos_bronze_ingestion
           notebook_task:
-            notebook_path: "./silver_pos_sales.ipynb"
+            notebook_path: "../silver_pos_sales.ipynb"
 
-        pos_data_quality:
+        - task_key: pos_data_quality
           depends_on:
             - task_key: pos_silver_transformation
           notebook_task:
-            notebook_path: "./pos_data_quality_check.ipynb"
-
+            notebook_path: "../pos_data_quality_check.ipynb"
         
         # PIPELINE 3: GOLD LAYER 
-        
-        gold_star_schema:  
+        - task_key: gold_star_schema  
           depends_on:
             - task_key: superstore_silver_data_quality
             - task_key: pos_data_quality 
           notebook_task:
-            notebook_path: "./silver_to_gold_layer.ipynb"
+            notebook_path: "../silver_to_gold_layer.ipynb"
