@@ -38,7 +38,7 @@ We employ a robust multi-environment GitOps strategy using GitLab CI/CD, powered
 ├── databricks.yml                    # Databricks Asset Bundle (DAB) targets configuration
 ├── *.ipynb                           # PySpark Notebooks for Bronze, Silver, Gold transformations
 └── README.md
-
+```
 ## ⚙️ Prerequisites & Setup
 To run or contribute to this project, you will need:
 1. **Databricks CLI** installed and configured.
@@ -50,7 +50,7 @@ The CI/CD runner and BI tools are hosted independently on a Hetzner Cloud Server
 ```bash
 cd runner-metabase
 docker-compose up -d
-
+```
 ## 👥 Contributors
 * **Giorgos Vrontos** - Data Engineer 
 * **Charis Christakidis** - Data Engineer
