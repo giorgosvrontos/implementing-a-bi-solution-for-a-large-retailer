@@ -1,0 +1,92 @@
+name: Databricks CI/CD
+
+on:
+  push:
+    branches:
+      - vrontos-develop
+      - Christakidis_Develop
+      - main
+
+jobs:
+ 
+  # VALIDATE JOBS
+
+  validate_dev_giorgos:
+    name: Validate Dev (Giorgos)
+    if: github.ref == 'refs/heads/vrontos-develop' 
+    runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_GIORGOS }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle validate -t dev_giorgos
+
+  validate_dev_charis:
+    name: Validate Dev (Charis)
+    if: github.ref == 'refs/heads/Christakidis_Develop' 
+    runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_CHARIS }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle validate -t dev_charis
+
+  validate_prod:
+    name: Validate Prod (Main)
+    if: github.ref == 'refs/heads/main' 
+    runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+      DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle validate -t prod
+
+  
+  # DEPLOY JOBS
+
+  deploy_to_dev_giorgos:
+    name: Deploy Dev (Giorgos)
+    needs: validate_dev_giorgos 
+    if: github.ref == 'refs/heads/vrontos-develop'
+    runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_GIORGOS }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle deploy -t dev_giorgos
+
+  deploy_to_dev_charis:
+    name: Deploy Dev (Charis)
+    needs: validate_dev_charis
+    if: github.ref == 'refs/heads/Christakidis_Develop'
+    runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_CHARIS }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle deploy -t dev_charis
+
+  deploy_to_prod:
+    name: Deploy Prod (Main)
+    needs: validate_prod
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+      DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle deploy -t prod
