@@ -7,48 +7,56 @@ This project implements an automated, end-to-end Business Intelligence (BI) and 
 The data pipeline is orchestrated using **Databricks Workflows** and is structured into three main layers, ensuring data quality and traceability at every step:
 
 *   **🥉 Bronze Layer (Raw Data):** 
-    *   Ingests batch CSV data (`superstore.csv_batch_ingestion`).
-    *   Simulates and loads streaming/incremental POS data (`pos_live_generator`, `bronze_pos_load`).
+    *   Ingests batch CSV data (`superstore.csv_batch_ingestion.ipynb`).
+    *   Simulates and loads streaming/incremental POS data (`pos_live_generator.ipynb`, `bronze_pos_load.ipynb`).
 *   **🥈 Silver Layer (Cleansed & Conformed):**
-    *   Applies strict Data Quality checks (`superstore.csv_data_quality_check`, `pos_data_quality_check`).
-    *   Cleans, filters, and standardizes data schemas (`superstore.csv_bronze_to_silver`, `silver_pos_sales`).
+    *   Applies strict Data Quality checks (`superstore.csv_data_quality_check.ipynb`, `pos_data_quality_check.ipynb`).
+    *   Cleans, filters, and standardizes data schemas (`superstore.csv_bronze_to_silver.ipynb`, `silver_pos_sales.ipynb`).
 *   **🥇 Gold Layer (Curated for BI):**
-    *   Combines and aggregates data into a business-ready Star Schema (`silver_to_gold_layer`).
-    *   Generates targeted Data Marts for downstream BI consumption (`data_marts`).
+    *   Combines and aggregates data into a business-ready Star Schema (`silver_to_gold_layer.ipynb`).
+    *   Generates targeted Data Marts for downstream BI consumption (`data_marts.ipynb`).
+
+## 📊 BI & Analytics (Metabase)
+The gold layer data is seamlessly connected to a self-hosted Metabase instance via Databricks Unity Catalog. 
+
+<img width="1342" height="938" alt="Screenshot_650" src="https://github.com/user-attachments/assets/8e16d2cc-14fd-425d-a5bb-006baf56956f" />
 
 ## 🛠️ Technology Stack & Infrastructure
 *   **Data Processing:** Databricks, Apache Spark (PySpark)
 *   **Infrastructure as Code (IaC):** Databricks Asset Bundles (DABs)
-*   **CI/CD:** GitLab CI/CD (Multi-branch GitOps deployment)
-*   **Cloud Infrastructure:** Hetzner Cloud Server (VPS)
-*   **Containerization:** Docker & Docker Compose (Self-hosted GitLab Runner, Metabase, and PostgreSQL)
+*   **CI/CD:** GitHub Actions (Multi-branch GitOps deployment)
+*   **Containerization:** Docker & Docker Compose (Metabase, and PostgreSQL)
 
 ## 🚀 CI/CD & Deployment Strategy (GitOps)
-We employ a robust multi-environment GitOps strategy using GitLab CI/CD, powered by a **self-hosted GitLab Runner** deployed on a **Hetzner server**:
+We employ a robust multi-environment GitOps strategy using **GitHub Actions**:
 *   **Development Environments:** Pushes to feature branches (`vrontos-develop`, `Christakidis_Develop`) automatically trigger isolated deployments to dedicated personal Databricks workspaces (`dev_giorgos`, `dev_charis`). Schedules are paused in these development environments.
-*   **Production Environment:** Merging to the `main` branch triggers a strict production deployment. The pipeline is scheduled to run automatically every night at 22:00.
+*   **Production Environment:** Merging to the `main` branch triggers a strict production deployment. The pipeline is scheduled to run automatically every night at 22:00 via the `medallion_job.yml` definition.
 
 ## 🗂️ Repository Structure
 ```text
+├── .github/workflows/
+│   └── databricks-ci-cd.yml          # GitHub Actions CI/CD pipeline definitions
+├── metabase/
+│   ├── .env                          # Environment variables & secrets (Database credentials)
+│   └── docker-compose.yml            # Docker setup for Metabase & PostgreSQL locally
 ├── resources/
 │   └── medallion_job.yml             # Databricks Workflow DAG & tasks configuration
-├── runner-metabase/
-│   └── docker_compose.yml            # Docker setup for Metabase, PostgreSQL & GitLab Runner on Hetzner
-├── .gitlab-ci.yml                    # CI/CD pipeline definitions
+├── .gitignore                        # Git ignore rules
 ├── databricks.yml                    # Databricks Asset Bundle (DAB) targets configuration
 ├── *.ipynb                           # PySpark Notebooks for Bronze, Silver, Gold transformations
-└── README.md
+└── README.md                         # Project documentation
 ```
 ## ⚙️ Prerequisites & Setup
 To run or contribute to this project, you will need:
-1. **Databricks CLI** installed and configured.
-2. Access to the GitLab repository and appropriate Databricks Service Principal tokens.
+1. **Databricks CLI** installed and configured locally.
+2. Docker Desktop installed on your machine.
+3. Access to the GitHub repository and appropriate Databricks Service Principal tokens.
 
-**Server Setup (Hetzner Infrastructure):**
-The CI/CD runner and BI tools are hosted independently on a Hetzner Cloud Server. To initialize or update these background services via SSH:
+**Local BI Setup**:
+The BI tool (Metabase) and its metadata database (PostgreSQL) are hosted locally using Docker volumes for data persistence. To start the services on your local machine, open your terminal and run:
 
 ```bash
-cd runner-metabase
+cd metabase
 docker-compose up -d
 ```
 ## 👥 Contributors
